@@ -1,9 +1,10 @@
 const Todo = require("../models/Todo");
+const mongoose = require('mongoose');
 
 module.exports.getAllTodos = async (req, res) => {
+
   try {
     const todos = await Todo.find();
-
     res.send({
       todos,
       success: true
@@ -28,10 +29,26 @@ module.exports.createTodo = async (req, res) => {
   }
 }
 
+module.exports.updateTodo = async (req, res) => {
+  const { todoId } = req.params;
+  const { isDone } = req.body;
+  console.log(await Todo.findOne({ _id: mongoose.Types.ObjectId(todoId) })
+  ,isDone)
+   try {
+     await Todo.updateOne({ _id: mongoose.Types.ObjectId(todoId) }, { $set: { isDone: isDone } })
+     res.send({
+       success: true
+     });
+   }
+   catch (err){
+     res.error(err.toLocaleString());
+   }
+}
+
 module.exports.deleteTodo = async (req, res) => {
-  const { _id } = req.params;
+  const { todoId } = req.params;
   try {
-    await Todo.deleteOne({_id});
+    await Todo.deleteOne({ _id: mongoose.Types.ObjectId(todoId)});
     res.send({
       success: true
     });
