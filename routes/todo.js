@@ -5,15 +5,17 @@ const {
     createTodo,
     deleteTodo,
     updateTodo,
-    getAllTodos,
+    getUserTodos
 } = require("../controllers/todo");
 
-router.get("/todo", getAllTodos);
+const jwtAuth = require("../middlewares/jwt-auth");
 
-router.post("/todo", createTodo);
+router.get("/todo", jwtAuth, getUserTodos);
 
-router.put("/todo/:todoId", updateTodo);
+router.post("/todo", jwtAuth, createTodo);
 
-router.delete("/todo/:todoId", deleteTodo);
+router.put("/todo/:todoId", jwtAuth, updateTodo);
+
+router.delete("/todo/:todoId", jwtAuth, deleteTodo);
 
 module.exports = router;

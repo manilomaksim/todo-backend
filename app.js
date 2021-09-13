@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const port = 3000;
+require("dotenv").config();
 
 const todoRoutes = require("./routes/todo");
 const userRoutes = require("./routes/user");
@@ -15,7 +16,7 @@ app.use(bodyParser.json());
 app.use("/", todoRoutes);
 app.use("/", userRoutes);
 
-mongoose.connect("mongodb://localhost:27000/todo", {
+mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }, () => {
