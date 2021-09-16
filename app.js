@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const todoRoutes = require("./routes/todo");
 const userRoutes = require("./routes/user");
+const articleRoutes = require("./routes/article");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use("/", todoRoutes);
 app.use("/", userRoutes);
+app.use("/", articleRoutes);
 
 mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
