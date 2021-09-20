@@ -2,7 +2,11 @@ const Article = require("../models/Article");
 const mongoose = require('mongoose');
 
 module.exports.getUserArticles = async (req, res) => {
+  const skip = +req.query.skip;
+  const limit = +req.query.limit;
+
   try {
+    const totalCount = await Article.find().count();
     const articles = await Article.aggregate([
       {
         $lookup: {
@@ -15,6 +19,8 @@ module.exports.getUserArticles = async (req, res) => {
       {
         $unwind: "$userInfo",
       },
+      { $skip: skip },
+      { $limit: limit },
       {
         $project: {
           title: 1,
@@ -27,6 +33,23 @@ module.exports.getUserArticles = async (req, res) => {
     ]);
     res.send({
       articles,
+      totalCount,
+      skipped: skip,
+      hasNextPage: totalCount > (skip + limit),
+      success: true
+    });
+  }
+  catch (err) {
+    res.status(400).send({ success: false, message: err.toLocaleString() });
+  }
+}
+
+module.exports.getArticle = async (req, res) => {
+  const { articleId } = req.params;
+  try {
+    const article = await Article.findOne({_id: mongoose.Types.ObjectId(articleId)});
+    res.send({
+      article,
       success: true
     });
   }
