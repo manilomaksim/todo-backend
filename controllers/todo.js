@@ -24,6 +24,7 @@ module.exports.createTodo = async (req, res) => {
   try {
     await newTodo.save();
     res.send({
+      newTodo,
       success: true
     });
   }
@@ -51,12 +52,13 @@ module.exports.deleteTodo = async (req, res) => {
   const userId = req.user._id;
   const { todoId } = req.params;
   try {
+    // res.code(200).send({ message: 'Error!!!'});
     await Todo.deleteOne({ _id: mongoose.Types.ObjectId(todoId), userId });
     res.send({
       success: true
     });
   }
   catch (err){
-    res.error(err.toLocaleString());
+    res.code(400).send(err.toLocaleString());
   }
 }
